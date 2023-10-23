@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Page Designer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            background-color: #f2f2f2; /* Background color */
+        }
+
+        .left-section {
+            width: 10%;
+            background-color: #333; /* Sidebar background color */
+            color: #fff;
+            padding: 20px;
+        }
+
+        .right-section {
+            width: 90%;
+            padding: 80px;
+            position: relative;
+            background-color: #fff; /* Content area background color */
+            color: #333; /* Text color */
+        }
+
+        .right-section .preview-publish {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .right-section button {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        /* Additional styles for the settings modal */
+        .modal-content input[type="text"] {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+
+        .modal-content label {
+            font-weight: bold;
+        }
+
+        /* Increase the font size */
+        .text {
+            font-size: 18px;
+        }
+
+        .design-element {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .design-element:hover .settings-icon {
+            display: inline-block;
+        }
+
+        .settings-icon {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="left-section">
+        <h3 style="color: #fff;">HALLYEX</h3>
+        <div>
+            <div class="text" draggable="true" ondragstart="dragElement(event, 'Layout')">LAYOUT</div><br>
+        </div>
+        <div>
+            <div class="text" draggable="true" ondragstart="dragElement(event, 'Label')">LABEL</div><br>
+        </div>
+        <div>
+            <div class="text" draggable="true" ondragstart="dragElement(event, 'Text Box')">TEXT BOX</div><br>
+        </div>
+        <div>
+            <div class="text" draggable="true" ondragstart="dragElement(event, 'Button')">BUTTON</div><br>
+        </div>
+        <div>
+            <div class="text" draggable="true" ondragstart="dragElement(event, 'Text Box')">DROP BOX</div><br>
+        </div>
+        <div>
+            <div class="text" draggable="true" ondragstart="dragElement(event, 'Check Box')">CHECK BOX</div><br>
+        </div>
+        <div>
+            <div class="text" draggable="true" ondragstart="dragElement(event, 'Radio Button')">RADIO BUTTON</div><br>
+        </div>
+        <div>
+            <div class="text" draggable="true" ondragstart="dragElement(event, 'Table')">TABLE</div><br>
+        </div>
+        <div>
+            <div class="text" draggable="true" ondragstart="dragElement(event, 'Navigation')">NAVIGATION</div><br>
+        </div>
+        <div>
+            <div class="text" draggable="true" ondragstart="dragElement(event, 'Image')">IMAGE</div><br>
+        </div>
+    </div>
+    <div class="right-section" id="contentArea" ondrop="dropElement(event)" ondragover="allowDrop(event)">
+        <div class="preview-publish">
+            <button id="previewButton" onclick="previewPage()">Preview</button>
+            <button id="publishButton" onclick="publishPage()">Publish</button>
+            <button id="saveButton" onclick="savePage()">Save</button>
+            <button id="clearButton" onclick="clearPage()">Clear</button>
+        </div>
+    </div>
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSettingsModal()">&times;</span>
+            <h2>Settings</h2>
+            <form id="elementSettingsForm">
+                <!-- Add fields for element settings here -->
+            </form>
+        </div>
+    </div>
+    <script>
+        function addElement(elementType) {
+            const rightSection = document.querySelector(".right-section");
+            const element = document.createElement("div");
+            element.textContent = elementType;
+            element.className = "design-element"; // Add CSS class for styling
+            rightSection.appendChild(element);
+        }
+
+        function dragElement(event, elementType) {
+            event.dataTransfer.setData("text/plain", elementType);
+        }
+
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function dropElement(event) {
+            event.preventDefault();
+            const elementType = event.dataTransfer.getData("text/plain");
+            const rightSection = document.querySelector(".right-section");
+            const element = document.createElement("div");
+            element.textContent = elementType;
+            element.className = "design-element"; // Add CSS class for styling
+            element.setAttribute("draggable", true);
+            element.onclick = function () {
+                openSettingsModal(elementType);
+            };
+            const settingsIcon = document.createElement("span");
+            settingsIcon.className = "settings-icon fa fa-cog";
+            settingsIcon.onclick = function (e) {
+                e.stopPropagation();
+                openSettingsModal(elementType);
+            };
+            element.appendChild(settingsIcon);
+            rightSection.appendChild(element);
+        }
+
+        function openSettingsModal(elementType) {
+            const modal = document.getElementById("settingsModal");
+            modal.style.display = "block";
+            const elementSettingsForm = document.getElementById("elementSettingsForm");
+            elementSettingsForm.innerHTML = `<label for="${elementType}-settings">Settings for ${elementType}:</label>
+            <input type="text" id="${elementType}-settings" name="${elementType}-settings"><br><br>`;
+        }
+    </script>
+</body>
+</html>
